@@ -10,9 +10,9 @@ class Proxy(object):
 
     def __init__(self, connection):
 
-        self.client = connection
+        self.client = connection  # connection between socket to client
         self.client_buffer = ''
-        self.target = None
+        self.target = None  # connection between socket to target host
         method, path, protocol = self.parse_request()
         self.handle_http_methods(method, path, protocol)
 
@@ -81,7 +81,7 @@ def start_proxy_server():
         listening_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         listening_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         listening_socket.bind((host, port))
-        listening_socket.listen(5)
+        listening_socket.listen(0)
         print 'proxy server started on {}...'.format(port)
     except Exception:
         print 'unable to initialize socket...'
