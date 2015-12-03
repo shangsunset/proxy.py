@@ -1,5 +1,4 @@
 import sys
-import errno
 import socket
 import select
 import threading
@@ -73,24 +72,7 @@ class Proxy(object):
             self.target.close()
 
 
-def proxy_server(connection, data, host, port=80):
-    print 'host: {}'.format(host)
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((host, port))
-    s.send(data)
-
-    while True:
-        reply = s.recv(BUFFER_SIZE)
-        try:
-            connection.send(reply)
-        except socket.error as e:
-            if e.errno == errno.EPIPE:
-                print "Detected disconnection"
-    s.close()
-    connection.close()
-
-
-def start():
+def start_proxy_server():
 
     host = 'localhost'
     port = 8001
@@ -99,7 +81,7 @@ def start():
         listening_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         listening_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         listening_socket.bind((host, port))
-        listening_socket.listen(0)
+        listening_socket.listen(5)
         print 'proxy server started on {}...'.format(port)
     except Exception:
         print 'unable to initialize socket...'
@@ -116,4 +98,4 @@ def start():
             sys.exit()
 
 if __name__ == '__main__':
-    start()
+    start_proxy_server()
